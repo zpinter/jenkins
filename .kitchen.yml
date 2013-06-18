@@ -1,67 +1,51 @@
 ---
 driver_plugin: vagrant
+driver_config:
+  require_chef_omnibus: 11.4.4
+  network:
+  - [private_network, ip: 33.33.33.10]
+  customize:
+    cpus: 2
+    memory: 1024
+
 platforms:
 - name: ubuntu-12.10
   driver_config:
-    box: canonical-ubuntu-12.10
-    box_url: http://cloud-images.ubuntu.com/vagrant/quantal/current/quantal-server-cloudimg-amd64-vagrant-disk1.box
-    require_chef_omnibus: 11.4.0
-    network:
-    - [private_network, ip: 33.33.33.10]
-    customize:
-      cpus: 2
-      memory: 1024
+    box: opscode-ubuntu-12.10
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.10_provisionerless.box
   run_list:
   - recipe[apt]
+
 - name: ubuntu-12.04
   driver_config:
-    box: canonical-ubuntu-12.04
-    box_url: http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
-    require_chef_omnibus: 11.4.0
-    network:
-    - [private_network, ip: 33.33.33.10]
-    customize:
-      cpus: 2
-      memory: 1024
+    box: opscode-ubuntu-12.04
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
   run_list:
   - recipe[apt]
+
 - name: ubuntu-10.04
   driver_config:
     box: opscode-ubuntu-10.04
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_chef-11.2.0.box
-    require_chef_omnibus: 11.4.0
-    network:
-    - [private_network, ip: 33.33.33.10]
-    customize:
-      cpus: 2
-      memory: 1024
+    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
   run_list:
   - recipe[apt]
-- name: centos-5.8
+
+- name: centos-5.9
   driver_config:
-    box: opscode-centos-5.8
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box
-    require_chef_omnibus: 11.4.0
-    network:
-    - [private_network, ip: 33.33.33.10]
-    customize:
-      cpus: 2
-      memory: 1024
-- name: centos-6.3
+    box: opscode-centos-5.9
+    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
+
+- name: centos-6.4
   driver_config:
-    box: opscode-centos-6.3
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.3_chef-11.2.0.box
-    require_chef_omnibus: 11.4.0
-    network:
-    - [private_network, ip: 33.33.33.10]
-    customize:
-      cpus: 2
-      memory: 1024
+    box: opscode-centos-6.4
+    box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
+
 suites:
 - name: server
   run_list:
   - recipe[jenkins::server]
   attributes: {}
+
 - name: server-proxy-nginx
   run_list:
   - recipe[jenkins::server]
@@ -71,6 +55,7 @@ suites:
       http_proxy:
         host_name: 33.33.33.10
         variant: nginx
+
 - name: server-proxy-nginx-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
@@ -84,6 +69,7 @@ suites:
         ssl:
           enabled: true
           redirect_http: true
+
 - name: server-proxy-nginx-basicauth
   run_list:
   - recipe[jenkins::server]
@@ -96,6 +82,7 @@ suites:
         server_auth_method: basic
         basic_auth_username: foo
         basic_auth_password: bar
+
 - name: server-proxy-apache2
   run_list:
   - recipe[jenkins::server]
@@ -105,6 +92,7 @@ suites:
       http_proxy:
         host_name: 33.33.33.10
         variant: apache2
+
 - name: server-proxy-apache2-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
@@ -118,6 +106,7 @@ suites:
         ssl:
           enabled: true
           redirect_http: true
+
 - name: server-proxy-apache2-basicauth
   run_list:
   - recipe[jenkins::server]
