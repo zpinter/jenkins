@@ -23,18 +23,6 @@ server {
 }
 <% end -%>
 
-<% if @redirect_http_forwarded -%>
-server {
-<% @listen_ports.each do |port| -%>
-  listen            <%= port %>;
-<% end -%>
-  server_name <%= @host_name %><% @host_aliases.each do |a| %><%= " #{a}" %> <% end %>;
-  if ($http_x_forwarded_proto = "http") {
-  rewrite     ^(.*) https://$host$1 permanent;
-  }
-}  
-<% end -%>
-
 server {
 <% if @ssl_enabled -%>
   <% @ssl_listen_ports.each do |port| -%>
@@ -62,6 +50,13 @@ server {
 <% end -%>
 
   location / {
+
+    <% if @redirect_http_forwarded -%>
+      if ($http_x_forwarded_proto = "http") {
+        rewrite     ^(.*) https://$host$1 permanent;
+      }
+    <% end -%>
+
     proxy_pass http://127.0.0.1:<%= node[:jenkins][:server][:port] %>;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
