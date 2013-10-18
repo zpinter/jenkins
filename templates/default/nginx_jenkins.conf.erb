@@ -23,6 +23,18 @@ server {
 }
 <% end -%>
 
+<% if @redirect_http_forwarded -%>
+server {
+<% @listen_ports.each do |port| -%>
+  listen            <%= port %>;
+<% end -%>
+  server_name <%= @host_name %><% @host_aliases.each do |a| %><%= " #{a}" %> <% end %>;
+  if ($http_x_forwarded_proto = "http") {
+  rewrite     ^(.*) https://$host$1 permanent;
+  }
+}  
+<% end -%>
+
 server {
 <% if @ssl_enabled -%>
   <% @ssl_listen_ports.each do |port| -%>

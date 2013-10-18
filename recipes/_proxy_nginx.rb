@@ -44,6 +44,7 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
     :www_redirect     => www_redirect,
     :max_upload_size  => node['jenkins']['http_proxy']['client_max_body_size'],
     :redirect_http    => node['jenkins']['http_proxy']['ssl']['redirect_http'],
+    :redirect_http_forwarded => node['jenkins']['http_proxy']['ssl']['redirect_http_forwarded'],
     :ssl_enabled      => node['jenkins']['http_proxy']['ssl']['enabled'],
     :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
   )
